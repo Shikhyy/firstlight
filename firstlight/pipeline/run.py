@@ -9,7 +9,7 @@ from firstlight.connectors.base import RawItem
 from firstlight.connectors.rss_news import RssConnector
 from firstlight.db import get_connection
 from firstlight.delivery.fallback import build_fallback_brief
-from firstlight.delivery.ntfy import send_ntfy_push
+from firstlight.delivery.simplepush import send_push
 from firstlight.pipeline.fetcher import fetch_safely
 from firstlight.pipeline.sync import sync_items
 
@@ -290,7 +290,7 @@ def rank_and_generate_brief(dry_run: bool, no_ai: bool):
                         )
             conn.commit()
 
-        send_ntfy_push(title, body, items_for_ai)
+        send_push(title, body, items_for_ai)
         logger.info("Notification sent and DB updated.")
 
     return summary
