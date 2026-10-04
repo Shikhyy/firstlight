@@ -290,6 +290,11 @@ def rank_and_generate_brief(dry_run: bool, no_ai: bool):
                         )
             conn.commit()
 
+        from firstlight.delivery.audio import generate_audio_brief
+
+        text_for_audio = f"Good morning! Here is your AI Briefing. {title}. {body}"
+        generate_audio_brief(text_for_audio)
+
         send_push(title, body, items_for_ai)
         logger.info("Notification sent and DB updated.")
 

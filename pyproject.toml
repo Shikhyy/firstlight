@@ -16,7 +16,9 @@ dependencies = [
     "icalendar",
     "rapidfuzz",
     "pywebpush",
-    "py-vapid"
+    "py-vapid",
+    "sentry-sdk",
+    "elevenlabs"
 ]
 
 [project.scripts]

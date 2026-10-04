@@ -26,11 +26,13 @@ Additionally, the system is designed to degrade gracefully: if the LLM crashes o
 ## Friend's Reaction
 > *"Waking up to just 5 bullet points that actually matter to me—instead of 40 noisy emails and calendar popups—has completely changed my mornings. And knowing it's all running locally on my own hardware makes me trust it enough to feed it my real to-do list."* — Shikhar
 
-## What's Next
-- Integrating local browser history parsing to resurface forgotten reading lists.
-- Adding a "mood check-in" interactive button to the notification to automatically reschedule lower-priority items.
-- Moving the frontend fully to a hosted Next.js Edge deployment while keeping the backend local.
+## Partner Integrations
+To maximize the value of First Light, I integrated several hackathon partners:
+- **Gemma**: All local AI summarization runs on Google's `gemma:2b` via Ollama for maximum speed and privacy.
+- **ElevenLabs**: Added support for **First Light Audio**! If configured, First Light generates an MP3 TTS of your morning brief using ElevenLabs so you can listen to it while making coffee.
+- **Sentry Agent Tracing**: Integrated Sentry SDK to monitor the reliability of our scraping pipeline and Ollama inference, ensuring the morning brief never fails silently.
 
 ## Prize Categories
-- **AI-Powered:** Uses local LLM summarization and verdict generation.
-- **Privacy-First:** All data parsing and LLM inference is done 100% locally on-device. No cloud APIs.
+- **AI-Powered:** Uses local LLM summarization (Gemma).
+- **Privacy-First:** All data parsing and LLM inference is done 100% locally.
+- **Hacktoberfest Partner APIs:** Incorporates ElevenLabs for TTS, Sentry for observability, and Gemma for inference.

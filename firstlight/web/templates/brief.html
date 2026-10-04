@@ -9,8 +9,11 @@
 {% if brief %}
 <div class="glass" style="animation-delay: 0.15s;">
     <div class="section-label">AI Briefing</div>
-    <h2 style="font-size: 20px;">{{ brief.title }}</h2>
-    <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <h2 style="font-size: 20px;">{{ brief.title }}</h2>
+        <audio controls style="height: 32px; width: 140px;" src="{{ url_for('static', filename='brief.mp3') }}"></audio>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-2);">
         {% for item in items %}
         <div>
             <div style="font-weight: 500;">{{ item.headline }}</div>

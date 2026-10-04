@@ -26,3 +26,7 @@ ai:
   model: "gemma:2b"
   top_n_for_model: 5
   timeout_s: 60
+
+integrations:
+  sentry_dsn: ""
+  elevenlabs_api_key: ""
