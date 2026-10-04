@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass" style="animation-delay: 0.15s; max-width: 400px; margin: 0 auto; margin-top: 10vh;">
+    <h1 class="fraunces" style="font-size: 28px; margin-bottom: 8px; text-align: center;">Welcome to First Light</h1>
+    <p style="color: var(--text-muted); font-size: 14px; text-align: center; margin-bottom: 24px;">Let's personalize your morning brief.</p>
+    
+    <form method="POST" action="/onboarding" style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label class="section-label" style="margin:0;">What's your name?</label>
+            <input type="text" name="name" class="styled-input" value="{{ cfg.profile.name }}" required>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label class="section-label" style="margin:0;">Your Interests (comma separated)</label>
+            <input type="text" name="interests" class="styled-input" value="{{ cfg.profile.interests | join(', ') }}" placeholder="AI, Web3, Python, Design..." required>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label class="section-label" style="margin:0;">AI Model</label>
+            <select name="model" class="styled-input">
+                <option value="gemma:2b" {% if cfg.ai.model == 'gemma:2b' %}selected{% endif %}>Gemma 2B (Fastest)</option>
+                <option value="llama3" {% if cfg.ai.model == 'llama3' %}selected{% endif %}>Llama 3</option>
+                <option value="mistral" {% if cfg.ai.model == 'mistral' %}selected{% endif %}>Mistral</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="primary-btn" style="margin-top: 12px; width: 100%;">Save & Continue</button>
+    </form>
+</div>
+{% endblock %}
