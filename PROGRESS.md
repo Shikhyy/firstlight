@@ -1,15 +1,15 @@
 # Progress
 
 ## Current
-- Phase: 0
+- Phase: 1
 - Branch: main
-- Last green commit: None
+- Last green commit: d6676ca feat(repo): add base folder structure and test placeholder
 
 ## Done
-- [ ] Phase 0: ... (tag: phase-0)
+- [x] Phase 0: Setup (tag: phase-0)
 
 ## In progress
-- [x] Setup (Phase 0)
+- [ ] Skeleton (Phase 1)
 
 ## Blocked / needs human
 - None
