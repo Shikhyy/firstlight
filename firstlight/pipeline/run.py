@@ -10,36 +10,90 @@ from firstlight.delivery.ntfy import send_ntfy_push
 logger = logging.getLogger(__name__)
 
 
-def run_pipeline(dry_run: bool = False):
+def run_pipeline(dry_run: bool = False, no_ai: bool = False):
     logger.info("Starting First Light pipeline")
 
+    from firstlight.connectors.calendar_ics import CalendarConnector
+    from firstlight.connectors.todos_md import TodosConnector
+    from firstlight.pipeline.normalize import normalize_date
+    from firstlight.pipeline.rank import compute_score, compute_urgency
+    from firstlight.pipeline.seen import is_novel, mark_seen
+
     # 1. Fetch data
-    # In Phase 1, just one RSS source
     rss_urls = config.SOURCES.get("rss", [])
     if not rss_urls:
         rss_urls = ["https://news.ycombinator.com/rss"]  # dummy default
 
-    connector = RssConnector(urls=rss_urls)
-    raw_items = connector.fetch()
+    raw_items = []
 
-    logger.info(f"Fetched {len(raw_items)} items from RSS")
+    rss = RssConnector(urls=rss_urls)
+    raw_items.extend(rss.fetch())
 
-    # Transform to dict for AI prompt (and add ref)
-    items_for_ai = []
+    if config.SOURCES.get("calendar_ics"):
+        cal = CalendarConnector()
+        raw_items.extend(cal.fetch())
+
+    if config.SOURCES.get("todos_file"):
+        todos = TodosConnector()
+        raw_items.extend(todos.fetch())
+
+    logger.info(f"Fetched {len(raw_items)} items total across sources")
+
+    # 2. Normalize and rank
+    processed = []
     for i, item in enumerate(raw_items):
-        # We simulate a countdown or basic formatting
-        # For RSS, we might not have a deadline, so countdown is empty
+        ref = f"{item.source}:{i}"
+
+        # Determine raw date to use based on source type
+        raw_date = None
+        if item.source == "calendar":
+            raw_date = item.start_text
+        elif item.source == "todos":
+            raw_date = item.deadline_text
+        elif item.source == "rss":
+            raw_date = item.raw.get("published")
+
+        iso_date, _ = normalize_date(raw_date)
+        urgency, countdown = compute_urgency(iso_date)
+
+        novelty = 1.0 if is_novel(item.source, str(i)) else 0.4
+        score = compute_score(urgency=urgency, novelty=novelty)
+
+        if score >= 0:
+            processed.append(
+                {
+                    "ref": ref,
+                    "title": item.title,
+                    "description": item.description or "",
+                    "countdown_text": countdown,
+                    "score": score,
+                    "source": item.source,
+                    "raw_id": str(i),
+                }
+            )
+
+    # Sort by score desc
+    processed.sort(key=lambda x: x["score"], reverse=True)
+
+    # Take top 5
+    top_items = processed[:5]
+
+    # Mark as seen
+    if not dry_run and not no_ai:
+        for item in top_items:
+            mark_seen(item["source"], item["raw_id"])
+
+    # Clean up fields for AI
+    items_for_ai = []
+    for item in top_items:
         items_for_ai.append(
             {
-                "ref": f"rss:{i}",
-                "title": item.title,
-                "description": item.description,
-                "countdown_text": "",
+                "ref": item["ref"],
+                "title": item["title"],
+                "description": item["description"],
+                "countdown_text": item["countdown_text"],
             }
         )
-
-    # Take top 5 for brevity
-    items_for_ai = items_for_ai[:5]
 
     profile = config.PROFILE
     name = profile.get("name", "User")
@@ -47,10 +101,13 @@ def run_pipeline(dry_run: bool = False):
 
     sys_prompt, user_prompt = build_brief_prompt(name, interests, items_for_ai)
 
-    if dry_run:
-        logger.info("[DRY RUN] Skipping AI call. Would send:")
-        logger.info(sys_prompt)
-        logger.info(user_prompt)
+    if dry_run or no_ai:
+        if no_ai:
+            logger.info("Skipping AI call (--no-ai). Using fallback.")
+        else:
+            logger.info("[DRY RUN] Skipping AI call. Would send:")
+            logger.info(sys_prompt)
+            logger.info(user_prompt)
         summary = build_fallback_brief(items_for_ai)
     else:
         summary = call_ollama(sys_prompt, user_prompt)

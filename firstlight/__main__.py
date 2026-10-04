@@ -10,15 +10,22 @@ logging.basicConfig(
 
 def main():
     parser = argparse.ArgumentParser(description="First Light CLI")
-    parser.add_argument("command", choices=["run"])
+    parser.add_argument("command", choices=["run", "init-db"])
     parser.add_argument(
         "--dry-run", action="store_true", help="Run without sending or AI calls"
+    )
+    parser.add_argument(
+        "--no-ai", action="store_true", help="Force fallback mode without AI"
     )
 
     args = parser.parse_args()
 
     if args.command == "run":
-        run_pipeline(dry_run=args.dry_run)
+        run_pipeline(dry_run=args.dry_run, no_ai=args.no_ai)
+    elif args.command == "init-db":
+        from firstlight.db import init_db
+
+        init_db()
 
 
 if __name__ == "__main__":
