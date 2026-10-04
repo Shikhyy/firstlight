@@ -1,10 +1,10 @@
 profile:
-  name: "[FRIEND NAME]"
+  name: "Shikhar"
   timezone: "Asia/Kolkata"
   wake_time: "06:30"
   country: "IN"
   is_student: true
-  interests: [ai, ml, web3]
+  interests: ["AI", "web3", "software engineering", "machine learning", "global affairs", "tech news", "hackathons", "events", "competitions", "challenges", "sports", "backend", "GPU", "infrastructure"]
   min_prize_usd: 0
   online_only: false
 
@@ -13,13 +13,16 @@ schedule:
   quiet_days: []
 
 sources:
-  calendar_ics: true
+  calendar_ics: false
   todos_file: "data/todos.md"
   rss:
     - http://feeds.bbci.co.uk/news/rss.xml
   hackathons: [dev, devpost, mlh, kaggle, web3_source]
 
+# PWA Web Push (Implementation in Phase 6)
+public_url: "http://localhost:8080"
+
 ai:
-  model: "gemma3:4b"
+  model: "gemma:2b"
   top_n_for_model: 5
   timeout_s: 60
