@@ -3,6 +3,7 @@ import logging
 from firstlight import config
 from firstlight.ai.client import call_ollama
 from firstlight.ai.prompts import build_brief_prompt
+from firstlight.connectors.base import RawItem
 from firstlight.connectors.rss_news import RssConnector
 from firstlight.delivery.fallback import build_fallback_brief
 from firstlight.delivery.ntfy import send_ntfy_push
@@ -24,24 +25,70 @@ def run_pipeline(dry_run: bool = False, no_ai: bool = False):
     if not rss_urls:
         rss_urls = ["https://news.ycombinator.com/rss"]  # dummy default
 
+    from firstlight.pipeline.fetcher import fetch_safely
+
     raw_items = []
 
     rss = RssConnector(urls=rss_urls)
-    raw_items.extend(rss.fetch())
+    raw_items.extend(fetch_safely(rss))
 
     if config.SOURCES.get("calendar_ics"):
         cal = CalendarConnector()
-        raw_items.extend(cal.fetch())
+        raw_items.extend(fetch_safely(cal))
 
     if config.SOURCES.get("todos_file"):
         todos = TodosConnector()
-        raw_items.extend(todos.fetch())
+        raw_items.extend(fetch_safely(todos))
+
+    hackathon_sources = config.SOURCES.get("hackathons", [])
+    if "dev" in hackathon_sources:
+        from firstlight.connectors.hackathons.dev import DevChallengesConnector
+
+        raw_items.extend(fetch_safely(DevChallengesConnector()))
+    if "devpost" in hackathon_sources:
+        from firstlight.connectors.hackathons.devpost import DevpostConnector
+
+        raw_items.extend(fetch_safely(DevpostConnector()))
+    if "mlh" in hackathon_sources:
+        from firstlight.connectors.hackathons.mlh import MlhConnector
+
+        raw_items.extend(fetch_safely(MlhConnector()))
+    if "kaggle" in hackathon_sources:
+        from firstlight.connectors.hackathons.kaggle import KaggleConnector
+
+        raw_items.extend(fetch_safely(KaggleConnector()))
+    if "web3_source" in hackathon_sources:
+        from firstlight.connectors.hackathons.web3 import Web3Connector
+
+        raw_items.extend(fetch_safely(Web3Connector()))
 
     logger.info(f"Fetched {len(raw_items)} items total across sources")
 
-    # 2. Normalize and rank
+    # 2. Deduplicate Hackathons
+    from firstlight.pipeline.dedupe import deduplicate_events
+
+    hackathons_only = [
+        i.model_dump()
+        for i in raw_items
+        if i.source not in ("rss", "calendar", "todos")
+    ]
+    deduped_hackathons_dicts = deduplicate_events(hackathons_only)
+
+    # Re-build raw items list, keeping non-hackathons exactly as they were
+    deduped_raw_items = [
+        i for i in raw_items if i.source in ("rss", "calendar", "todos")
+    ]
+    for d in deduped_hackathons_dicts:
+        deduped_raw_items.append(RawItem(**d))
+
+    logger.info(f"After deduplication: {len(deduped_raw_items)} items")
+
+    # 3. Normalize and rank
+    from firstlight.pipeline.classify import classify_keywords
+    from firstlight.pipeline.verdict import get_verdict
+
     processed = []
-    for i, item in enumerate(raw_items):
+    for i, item in enumerate(deduped_raw_items):
         ref = f"{item.source}:{i}"
 
         # Determine raw date to use based on source type
@@ -52,6 +99,8 @@ def run_pipeline(dry_run: bool = False, no_ai: bool = False):
             raw_date = item.deadline_text
         elif item.source == "rss":
             raw_date = item.raw.get("published")
+        else:
+            raw_date = item.deadline_text
 
         iso_date, _ = normalize_date(raw_date)
         urgency, countdown = compute_urgency(iso_date)
@@ -60,15 +109,33 @@ def run_pipeline(dry_run: bool = False, no_ai: bool = False):
         score = compute_score(urgency=urgency, novelty=novelty)
 
         if score >= 0:
+            # Classification
+            title = item.title
+            desc = item.description or ""
+            domains = classify_keywords(title, desc)
+
+            # AI verdict for top/interesting items or we just do it for hackathons
+            # To save tokens, only do it if score is high and it's a hackathon
+            verdict = ""
+            if (
+                not dry_run
+                and not no_ai
+                and item.source not in ("rss", "calendar", "todos")
+                and score > 0.3
+            ):
+                verdict = get_verdict(title, desc)
+
             processed.append(
                 {
                     "ref": ref,
-                    "title": item.title,
-                    "description": item.description or "",
+                    "title": title,
+                    "description": desc,
                     "countdown_text": countdown,
                     "score": score,
                     "source": item.source,
                     "raw_id": str(i),
+                    "domains": domains,
+                    "verdict": verdict,
                 }
             )
 
