@@ -3,7 +3,7 @@
 ## Current
 - Phase: 4
 - Branch: main
-- Last green commit: (pending) feat(hackathons): add dev, devpost, mlh, kaggle, web3 connectors + dedupe
+- Last green commit: 8c10482 feat(hackathon): add 5 connectors and dedupe for phase 3
 
 ## Done
 - [x] Phase 0: Setup (tag: phase-0)
