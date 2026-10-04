@@ -30,3 +30,4 @@ ai:
 integrations:
   sentry_dsn: ""
   elevenlabs_api_key: ""
+  groq_api_key: ""
