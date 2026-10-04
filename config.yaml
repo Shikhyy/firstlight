@@ -1,0 +1,25 @@
+profile:
+  name: "[FRIEND NAME]"
+  timezone: "Asia/Kolkata"
+  wake_time: "06:30"
+  country: "IN"
+  is_student: true
+  interests: [ai, ml, web3]
+  min_prize_usd: 0
+  online_only: false
+
+schedule:
+  run_at: "05:30"
+  quiet_days: []
+
+sources:
+  calendar_ics: true
+  todos_file: "data/todos.md"
+  rss:
+    - https://example.com/feed.xml
+  hackathons: [dev, devpost, mlh, kaggle, web3_source]
+
+ai:
+  model: "gemma3:4b"
+  top_n_for_model: 5
+  timeout_s: 60
