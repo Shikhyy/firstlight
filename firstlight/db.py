@@ -91,6 +91,12 @@ CREATE TABLE IF NOT EXISTS seen_items (
   PRIMARY KEY (item_type, item_ref)
 );
 
+CREATE TABLE IF NOT EXISTS webpush_subscriptions (
+  id INTEGER PRIMARY KEY,
+  subscription_json TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS source_runs (
   id INTEGER PRIMARY KEY,
   source TEXT NOT NULL, started_at TEXT NOT NULL, finished_at TEXT,

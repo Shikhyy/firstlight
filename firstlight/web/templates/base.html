@@ -6,6 +6,7 @@
     <title>First Light</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 </head>
 <body>
     <div class="orbs">
@@ -19,11 +20,60 @@
             <a href="/brief">Brief</a>
             <a href="/radar">Radar</a>
             <a href="/health">Health</a>
+            <a href="#" id="enable-push" style="color: var(--accent);">🔔 Enable Push</a>
         </nav>
         
         <main class="content">
             {% block content %}{% endblock %}
         </main>
     </div>
+
+    <script>
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/sw.js')
+            .then(function(reg) {
+                console.log('Service Worker Registered!', reg);
+                
+                document.getElementById('enable-push').addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') {
+                        alert('Push notifications disabled.');
+                        return;
+                    }
+                    
+                    const response = await fetch('/api/vapidPublicKey');
+                    const vapidData = await response.json();
+                    
+                    const subscribeOptions = {
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(vapidData.publicKey)
+                    };
+                    
+                    const pushSubscription = await reg.pushManager.subscribe(subscribeOptions);
+                    
+                    await fetch('/api/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(pushSubscription)
+                    });
+                    
+                    alert('Push notifications enabled!');
+                });
+            });
+        }
+    </script>
 </body>
 </html>

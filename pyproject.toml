@@ -12,11 +12,11 @@ authors = [
 ]
 dependencies = [
     "requests",
-    "pydantic",
-    "flask",
     "feedparser",
     "icalendar",
-    "rapidfuzz"
+    "rapidfuzz",
+    "pywebpush",
+    "py-vapid"
 ]
 
 [project.scripts]
