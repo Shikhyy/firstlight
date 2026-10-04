@@ -3,7 +3,7 @@
 ## Current
 - Phase: 5
 - Branch: main
-- Last green commit: 113ef42 feat(pipeline): complete phase 4 database integration and E2E pipeline
+- Last green commit: 6018925 feat(delivery): switch to PWA Web Push stub instead of third-party app
 
 ## Done
 - [x] Phase 0: Setup (tag: phase-0)
