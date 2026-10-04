@@ -167,6 +167,14 @@ def get_vapid_key():
     return {"publicKey": ""}
 
 
+@app.route("/api/todos/<int:todo_id>/done", methods=["POST"])
+def mark_todo_done(todo_id):
+    db = get_db()
+    db.execute("UPDATE todos SET status='done' WHERE id=?", (todo_id,))
+    db.commit()
+    return {"status": "ok"}
+
+
 @app.route("/api/subscribe", methods=["POST"])
 def subscribe():
     import json

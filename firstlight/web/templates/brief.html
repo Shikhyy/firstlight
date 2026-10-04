@@ -34,8 +34,8 @@
     {% if todos %}
     <div style="display: flex; flex-direction: column; gap: var(--space-2);">
         {% for t in todos %}
-        <label style="display: flex; align-items: center; gap: var(--space-2);">
-            <input type="checkbox" style="accent-color: var(--accent); width: 20px; height: 20px;">
+        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
+            <input type="checkbox" onclick="markDone({{ t.id }}, this)" style="accent-color: var(--accent); width: 20px; height: 20px;">
             <span>{{ t.title }}</span>
         </label>
         {% endfor %}
@@ -44,4 +44,19 @@
     <p>All caught up!</p>
     {% endif %}
 </div>
+
+<script>
+async function markDone(id, checkbox) {
+    if (!checkbox.checked) return;
+    checkbox.disabled = true;
+    try {
+        await fetch(`/api/todos/${id}/done`, { method: 'POST' });
+        checkbox.parentElement.style.textDecoration = 'line-through';
+        checkbox.parentElement.style.opacity = '0.5';
+    } catch(e) {
+        checkbox.disabled = false;
+        checkbox.checked = false;
+    }
+}
+</script>
 {% endblock %}
