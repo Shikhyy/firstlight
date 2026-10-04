@@ -9,7 +9,7 @@ from firstlight.connectors.base import RawItem
 from firstlight.connectors.rss_news import RssConnector
 from firstlight.db import get_connection
 from firstlight.delivery.fallback import build_fallback_brief
-from firstlight.delivery.simplepush import send_push
+from firstlight.delivery.webpush import send_push
 from firstlight.pipeline.fetcher import fetch_safely
 from firstlight.pipeline.sync import sync_items
 
