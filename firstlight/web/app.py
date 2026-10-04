@@ -129,6 +129,8 @@ def onboarding():
             i.strip() for i in request.form.get("interests", "").split(",") if i.strip()
         ]
         model = request.form.get("model", "gemma:2b")
+        hf_token = request.form.get("hf_token", "")
+        elevenlabs_key = request.form.get("elevenlabs_key", "")
 
         with open(config_path, "r") as f:
             cfg = yaml.safe_load(f)
@@ -136,6 +138,11 @@ def onboarding():
         cfg["profile"]["name"] = name
         cfg["profile"]["interests"] = interests
         cfg["ai"]["model"] = model
+
+        if "integrations" not in cfg:
+            cfg["integrations"] = {}
+        cfg["integrations"]["hf_token"] = hf_token
+        cfg["integrations"]["elevenlabs_api_key"] = elevenlabs_key
 
         with open(config_path, "w") as f:
             yaml.dump(cfg, f, sort_keys=False)

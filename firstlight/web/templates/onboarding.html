@@ -17,6 +17,16 @@
         </div>
         
         <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label class="section-label" style="margin:0;">Hugging Face Token (Cloud Fallback)</label>
+            <input type="password" name="hf_token" class="styled-input" value="{{ cfg.integrations.hf_token | default('') }}" placeholder="hf_..." >
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label class="section-label" style="margin:0;">ElevenLabs API Key (Audio Briefs)</label>
+            <input type="password" name="elevenlabs_key" class="styled-input" value="{{ cfg.integrations.elevenlabs_api_key | default('') }}" placeholder="sk_..." >
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 6px;">
             <label class="section-label" style="margin:0;">AI Model</label>
             <select name="model" class="styled-input">
                 <option value="gemma:2b" {% if cfg.ai.model == 'gemma:2b' %}selected{% endif %}>Gemma 2B (Fastest)</option>

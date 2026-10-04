@@ -31,3 +31,4 @@ integrations:
   sentry_dsn: ""
   elevenlabs_api_key: ""
   groq_api_key: ""
+  hf_token: ""
