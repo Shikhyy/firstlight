@@ -30,9 +30,10 @@ Additionally, the system is designed to degrade gracefully: if the LLM crashes o
 To maximize the value of First Light, I integrated several hackathon partners:
 - **Gemma**: All local AI summarization runs on Google's `gemma:2b` via Ollama for maximum speed and privacy.
 - **ElevenLabs**: Added support for **First Light Audio**! If configured, First Light generates an MP3 TTS of your morning brief using ElevenLabs so you can listen to it while making coffee.
+- **Render**: Included a `render.yaml` Blueprint to instantly deploy First Light as a cloud-hosted dashboard with a persistent SQLite disk, avoiding the need for `ngrok` tunnels for PWA Web Push!
 - **Sentry Agent Tracing**: Integrated Sentry SDK to monitor the reliability of our scraping pipeline and Ollama inference, ensuring the morning brief never fails silently.
 
 ## Prize Categories
 - **AI-Powered:** Uses local LLM summarization (Gemma).
 - **Privacy-First:** All data parsing and LLM inference is done 100% locally.
-- **Hacktoberfest Partner APIs:** Incorporates ElevenLabs for TTS, Sentry for observability, and Gemma for inference.
+- **Hacktoberfest Partner APIs:** Incorporates ElevenLabs for TTS, Render for cloud deployment, Sentry for observability, and Gemma for inference.

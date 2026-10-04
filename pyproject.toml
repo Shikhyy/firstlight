@@ -18,7 +18,8 @@ dependencies = [
     "pywebpush",
     "py-vapid",
     "sentry-sdk",
-    "elevenlabs"
+    "elevenlabs",
+    "gunicorn"
 ]
 
 [project.scripts]
