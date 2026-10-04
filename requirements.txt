@@ -1,0 +1,16 @@
+# Runtime dependencies
+flask
+pydantic
+requests
+feedparser
+icalendar
+rapidfuzz
+beautifulsoup4
+python-dateutil
+
+# Dev dependencies
+pytest
+pytest-cov
+requests-mock
+freezegun
+ruff
