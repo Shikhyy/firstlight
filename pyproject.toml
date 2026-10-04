@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "firstlight"
+version = "0.1.0"
+description = "A privacy-first, AI-summarized morning brief and hackathon radar."
+requires-python = ">=3.10"
+authors = [
+    {name = "Shikhar", email = "shikhar@example.com"}
+]
+dependencies = [
+    "requests",
+    "pydantic",
+    "flask",
+    "feedparser",
+    "icalendar",
+    "rapidfuzz"
+]
+
+[project.scripts]
+firstlight = "firstlight.__main__:main"
+
+[tool.setuptools]
+packages = ["firstlight"]
