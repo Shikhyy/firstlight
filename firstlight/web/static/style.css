@@ -1,0 +1,132 @@
+:root {
+  --bg: #0b1020;
+  --glass: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(255, 255, 255, 0.22);
+  --glass-highlight: rgba(255, 255, 255, 0.28);
+  --orb-violet: #7b5cff;
+  --orb-teal: #2ee6c5;
+  --orb-coral: #ff8a5c;
+  --accent: #ffb27a;
+  --accent-strong: #ff8a5c;
+  --on-accent: #1a1028;
+  --text: #ffffff;
+  --text-body: rgba(255, 255, 255, 0.88);
+  --text-muted: rgba(255, 255, 255, 0.74);
+  --radius-card: 22px;
+  --radius-btn: 14px;
+  --radius-chip: 22px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px;
+  --space-4: 16px; --space-5: 20px; --space-6: 28px;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .fraunces {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  margin-top: 0;
+}
+
+/* Background Orbs */
+.orbs {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.orb {
+  position: absolute;
+  filter: blur(70px);
+  opacity: 0.4;
+  border-radius: 50%;
+  width: 300px;
+  height: 300px;
+}
+
+.orb-1 { background: var(--orb-violet); top: -50px; right: -50px; animation: drift1 12s infinite alternate; }
+.orb-2 { background: var(--orb-teal); top: 30%; left: -100px; animation: drift2 14s infinite alternate; }
+.orb-3 { background: var(--orb-coral); bottom: -50px; right: 10%; animation: drift1 16s infinite alternate-reverse; }
+
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  padding: var(--space-4);
+  min-height: 100vh;
+}
+
+.nav-bar {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: var(--space-6);
+}
+
+.nav-bar a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 8px 32px rgba(5, 5, 20, 0.35), inset 0 1px 0 var(--glass-highlight);
+  margin-bottom: var(--space-4);
+  animation: rise .7s ease-out both;
+}
+
+.section-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+
+.primary-btn {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: var(--radius-btn);
+  min-height: 44px;
+  font-weight: 700;
+  padding: 0 var(--space-4);
+  cursor: pointer;
+}
+
+.urgency-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  margin-top: var(--space-2);
+  overflow: hidden;
+}
+.urgency-bar-fill {
+  height: 100%;
+  background: var(--accent-strong);
+  animation: grow 1.3s ease-out;
+  transform-origin: left;
+}
+
+@keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(34px,46px) scale(1.18)} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-44px,30px) scale(1.12)} }
+@keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+@keyframes grow { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

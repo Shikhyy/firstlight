@@ -10,7 +10,7 @@ logging.basicConfig(
 
 def main():
     parser = argparse.ArgumentParser(description="First Light CLI")
-    parser.add_argument("command", choices=["run", "init-db"])
+    parser.add_argument("command", choices=["run", "init-db", "web"])
     parser.add_argument(
         "--dry-run", action="store_true", help="Run without sending or AI calls"
     )
@@ -26,6 +26,11 @@ def main():
         from firstlight.db import init_db
 
         init_db()
+    elif args.command == "web":
+        from firstlight.web.app import create_app
+
+        app = create_app()
+        app.run(host="0.0.0.0", port=8080, debug=True)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="fraunces">Hackathon Radar</h1>
+
+<div style="display: flex; gap: var(--space-2); overflow-x: auto; margin-bottom: var(--space-4); padding-bottom: var(--space-2);">
+    {% for dom in domains %}
+    <div style="background: var(--glass); border-radius: var(--radius-chip); padding: 8px 16px; font-weight: 500; font-size: 14px;">
+        {{ dom }}
+    </div>
+    {% endfor %}
+</div>
+
+<div style="display: flex; flex-direction: column; gap: var(--space-4);">
+    {% for e in events %}
+    <div class="glass">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+            <div class="section-label" style="margin: 0;">{{ e.domains[0] if e.domains else 'EVENT' }}</div>
+            <div style="color: var(--accent); font-weight: 700;">{{ e.countdown_text }}</div>
+        </div>
+        <h3 style="margin: 0 0 var(--space-1) 0;">{{ e.title }}</h3>
+        {% if e.verdict_json %}
+        <div style="font-size: 13px; color: var(--text-muted);">
+            Verdict: {{ e.verdict_json }}
+        </div>
+        {% endif %}
+        <div class="urgency-bar-track">
+            <div class="urgency-bar-fill" style="width: {{ e.urgency_pct }}%;"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div style="margin-top: var(--space-6); font-size: 13px; color: var(--text-muted); text-align: center;">
+    {% if health_ok %}
+    All connectors OK
+    {% else %}
+    Some connectors failed
+    {% endif %}
+</div>
+{% endblock %}

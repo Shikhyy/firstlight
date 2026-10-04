@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header style="margin-bottom: var(--space-5);">
+    <div style="font-size: 14px; color: var(--text-muted);">{{ brief.brief_date if brief else 'Today' }}</div>
+    <h1 class="fraunces" style="font-size: 32px;">Good morning, {{ profile.name }}</h1>
+</header>
+
+{% if brief %}
+<div class="glass" style="animation-delay: 0.15s;">
+    <div class="section-label">AI Briefing</div>
+    <h2 style="font-size: 20px;">{{ brief.title }}</h2>
+    <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+        {% for item in items %}
+        <div>
+            <div style="font-weight: 500;">{{ item.headline }}</div>
+            <div style="font-size: 14px; color: var(--text-muted);">{{ item.why_line }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="glass">
+    <div class="section-label">AI Briefing</div>
+    <p>No brief available yet.</p>
+</div>
+{% endif %}
+
+<div class="glass" style="animation-delay: 0.3s;">
+    <div class="section-label">Todos</div>
+    {% if todos %}
+    <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+        {% for t in todos %}
+        <label style="display: flex; align-items: center; gap: var(--space-2);">
+            <input type="checkbox" style="accent-color: var(--accent); width: 20px; height: 20px;">
+            <span>{{ t.title }}</span>
+        </label>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>All caught up!</p>
+    {% endif %}
+</div>
+{% endblock %}
