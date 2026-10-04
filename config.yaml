@@ -16,7 +16,7 @@ sources:
   calendar_ics: true
   todos_file: "data/todos.md"
   rss:
-    - https://example.com/feed.xml
+    - http://feeds.bbci.co.uk/news/rss.xml
   hackathons: [dev, devpost, mlh, kaggle, web3_source]
 
 ai:

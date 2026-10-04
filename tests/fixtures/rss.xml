@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>AI News</title>
+  <link>https://example.com</link>
+  <description>Latest AI updates</description>
+  <item>
+    <title>Gemma 3 released!</title>
+    <link>https://example.com/gemma-3</link>
+    <description>Google releases Gemma 3 open weights.</description>
+    <published>Sun, 04 Oct 2026 12:00:00 GMT</published>
+  </item>
+  <item>
+    <title>Ollama update</title>
+    <link>https://example.com/ollama</link>
+    <description>Ollama now supports new models.</description>
+    <published>Sat, 03 Oct 2026 12:00:00 GMT</published>
+  </item>
+</channel>
+</rss>
