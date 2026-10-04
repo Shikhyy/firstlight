@@ -1,15 +1,16 @@
 # Progress
 
 ## Current
-- Phase: 1
+- Phase: 2
 - Branch: main
-- Last green commit: d6676ca feat(repo): add base folder structure and test placeholder
+- Last green commit: b92f8e9 feat(pipeline): add walking skeleton pipeline and tests
 
 ## Done
 - [x] Phase 0: Setup (tag: phase-0)
+- [x] Phase 1: Walking Skeleton (tag: phase-1)
 
 ## In progress
-- [ ] Skeleton (Phase 1)
+- [ ] Connectors (Phase 2)
 
 ## Blocked / needs human
 - None
